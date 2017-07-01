@@ -1,0 +1,37 @@
+{
+  "name": "postcss-extract-css-block",
+  "version": "0.0.0",
+  "description": "PostCSS plugin for doing things",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "extract-css",
+    "css-splitting"
+  ],
+  "author": "Simon Legg <leggsimon@gmail.com>",
+  "license": "MIT",
+  "repository": "leggsimon/postcss-extract-css-block",
+  "bugs": {
+    "url": "https://github.com/leggsimon/postcss-extract-css-block/issues"
+  },
+  "homepage": "https://github.com/leggsimon/postcss-extract-css-block",
+  "dependencies": {
+    "css": "^2.2.1",
+    "postcss": "^6.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-config-postcss": "^2.0.2",
+    "jest": "^20.0.0"
+  },
+  "scripts": {
+    "test": "jest && eslint *.js"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-postcss/es5",
+    "env": {
+      "jest": true
+    }
+  }
+}
