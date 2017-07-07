@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/leggsimon/postcss-extract-css-block",
   "dependencies": {
-    "css": "^2.2.1",
     "postcss": "^6.0.1"
   },
   "devDependencies": {
@@ -26,7 +25,7 @@
     "jest": "^20.0.0"
   },
   "scripts": {
-    "test": "jest && eslint *.js"
+    "test": "jest && eslint --fix *.js"
   },
   "eslintConfig": {
     "extends": "eslint-config-postcss/es5",
