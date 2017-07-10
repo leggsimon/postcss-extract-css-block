@@ -4,16 +4,16 @@ const fs = require('fs');
 const DELIMITER = /^!\s?(start|end):([\w_-]+\.css)\s?$/;
 
 module.exports = postcss.plugin('postcss-extract-css-block', function (opts) {
-	opts = opts || {};
+    opts = opts || {};
 
-	// Work with options here
+    // Work with options here
 
-	return function (root, result) {
+    return function (root, result) {
 
         const stack = [];
         const blocks = {};
 
-        stack.push('main.css')
+        stack.push('main.css');
         let context = stack[stack.length - 1];
 
         root.nodes.forEach(rule => {
@@ -42,19 +42,16 @@ module.exports = postcss.plugin('postcss-extract-css-block', function (opts) {
                 blocks[context] = postcss.root();
             }
 
-            blocks[context].nodes.push(rule)
+            blocks[context].nodes.push(rule);
         });
 
 
-
         Object.keys(blocks).forEach(filename => {
-            console.log('\x1b[36m', blocks[filename], '\x1b[0m');
             const css = blocks[filename].toString();
-            fs.writeFile(`public/${filename}`, css, 'utf8',(err) => {
+            fs.writeFile(`public/${filename}`, css, 'utf8', (err) => {
                 if (err) throw err;
-                console.log(`${css} has been saved to ${filename}!`);
-            })
-        })
+            });
+        });
         result.root = blocks[stack[0]];
 
         // for each of our ASTs, turn them into css text and write the file
@@ -65,7 +62,7 @@ module.exports = postcss.plugin('postcss-extract-css-block', function (opts) {
         //
 
         // return [result]
-		// Transform CSS AST here
+        // Transform CSS AST here
 
-	};
+    };
 });
