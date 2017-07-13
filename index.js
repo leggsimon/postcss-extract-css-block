@@ -1,15 +1,14 @@
 const postcss = require('postcss');
 const fs = require('fs');
+const path = require('path');
+const mkdirp = require('mkdirp');
 
 const DELIMITER = /^!\s?(start|end):([\w_-]+\.css)\s?$/;
 
-module.exports = postcss.plugin('postcss-extract-css-block', function (opts) {
-    opts = opts || {};
-
-    // Work with options here
-
+module.exports = postcss.plugin('postcss-extract-css-block', function () {
     return function (root, result) {
 
+        const targetDir = path.dirname(result.opts.to);
         const stack = [];
         const blocks = {};
 
@@ -17,6 +16,7 @@ module.exports = postcss.plugin('postcss-extract-css-block', function (opts) {
         let context = stack[stack.length - 1];
 
         root.nodes.forEach(rule => {
+
             // if it's a comment
             if (rule.type === 'comment' && DELIMITER.test(rule.text)) {
                 const matches = rule.text.match(DELIMITER);
@@ -45,10 +45,14 @@ module.exports = postcss.plugin('postcss-extract-css-block', function (opts) {
             blocks[context].nodes.push(rule);
         });
 
+        mkdirp(targetDir, (err) => {
+            if (err) console.error(err);
+        });
 
         Object.keys(blocks).forEach(filename => {
-            const css = blocks[filename].toString();
-            fs.writeFile(`public/${filename}`, css, 'utf8', (err) => {
+            const css = blocks[filename].toString().trim();
+            const target = path.join(targetDir, filename);
+            fs.writeFileSync(target, css, 'utf8', (err) => {
                 if (err) throw err;
             });
         });

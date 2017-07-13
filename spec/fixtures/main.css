@@ -1,0 +1,43 @@
+.outside-media-query {
+  content: 'outside media query';
+}
+
+@media screen and (min-width: 800px;) {
+
+  .inside-media-query {
+    content: 'inside media query';
+  }
+
+}
+
+/*! start:external.css */
+.external {
+  content: 'external';
+}
+/*! end:external.css */
+
+/*! start:parent.css */
+.parent {
+  content: 'parent start';
+}
+
+/*! start:child.css */
+.child {
+  content: 'child';
+}
+/*! end:child.css */
+
+.parent-extras {
+  content: 'parent end';
+}
+/*! end:parent.css */
+
+/*! start:external.css */
+.external-extras {
+  content: 'external extras';
+}
+/*! end:external.css */
+
+.final {
+  content: 'final';
+}
