@@ -1,5 +1,5 @@
 const postcss = require('postcss');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
 const mkdirp = require('mkdirp');
 
@@ -8,11 +8,16 @@ const DELIMITER = /^!\s?(start|end):([\w_-]+\.css)\s?$/;
 module.exports = postcss.plugin('postcss-extract-css-block', function () {
     return function (root, result) {
 
-        const targetDir = path.dirname(result.opts.to);
+        const target = result.opts.to;
+        const treatTargetAsDir = path.extname(target);
+        const targetDir = treatTargetAsDir ? path.dirname(target) : target;
+        const targetFile = treatTargetAsDir ?
+            path.basename(target) :
+            'main.css';
         const stack = [];
         const blocks = {};
 
-        stack.push('main.css');
+        stack.push(targetFile);
         let context = stack[stack.length - 1];
 
         root.nodes.forEach(rule => {
@@ -51,8 +56,8 @@ module.exports = postcss.plugin('postcss-extract-css-block', function () {
 
         Object.keys(blocks).forEach(filename => {
             const css = blocks[filename].toString().trim();
-            const target = path.join(targetDir, filename);
-            fs.writeFileSync(target, css, 'utf8', (err) => {
+            const outputFile = path.join(targetDir, filename);
+            fs.writeFileSync(outputFile, css, 'utf8', (err) => {
                 if (err) throw err;
             });
         });
