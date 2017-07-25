@@ -17,18 +17,48 @@ afterEach(() => {
     fs.removeSync(`${__dirname}/public`);
 });
 
-it('writes multiple files', () => {
-    return postcss([ plugin() ]).process(cssFixture, { to: targetFile })
-        .then(() => {
-            const publicDirExists = fs.existsSync(`${__dirname}/public`);
-            expect(publicDirExists).toBe(true);
+describe('output file', () => {
+    it('writes multiple files', () => {
+        return postcss([plugin()]).process(cssFixture, { to: targetFile })
+            .then(() => {
+                const publicDirExists = fs.existsSync(`${__dirname}/public`);
+                expect(publicDirExists).toBe(true);
 
-            const filesCreated = fs.readdirSync(`${__dirname}/public`);
-            const expectedFiles = ['main.css', 'external.css', 'parent.css', 'child.css'];
-            expectedFiles.forEach(file => {
-                expect(filesCreated).toContain(file);
+                const filesCreated = fs.readdirSync(`${__dirname}/public`);
+                const expectedFiles = ['main.css', 'external.css', 'parent.css', 'child.css'];
+                expectedFiles.forEach(file => {
+                    expect(filesCreated).toContain(file);
+                });
             });
-        });
+    });
+
+    it('will write output to a different filename', () => {
+        return postcss([plugin()]).process(cssFixture, { to: path.join(__dirname, 'public/different.css') })
+            .then(() => {
+                const publicDirExists = fs.existsSync(`${__dirname}/public`);
+                expect(publicDirExists).toBe(true);
+
+                const filesCreated = fs.readdirSync(`${__dirname}/public`);
+                const expectedFiles = ['different.css', 'external.css', 'parent.css', 'child.css'];
+                expectedFiles.forEach(file => {
+                    expect(filesCreated).toContain(file);
+                });
+            });
+    });
+
+    it('will write output to main.css if target has no filename', () => {
+        return postcss([plugin()]).process(cssFixture, { to: path.join(__dirname, 'public') })
+            .then(() => {
+                const publicDirExists = fs.existsSync(`${__dirname}/public`);
+                expect(publicDirExists).toBe(true);
+
+                const filesCreated = fs.readdirSync(`${__dirname}/public`);
+                const expectedFiles = ['main.css', 'external.css', 'parent.css', 'child.css'];
+                expectedFiles.forEach(file => {
+                    expect(filesCreated).toContain(file);
+                });
+            });
+    });
 });
 
 describe('output styles', () => {
@@ -46,7 +76,6 @@ describe('output styles', () => {
 
     it('extracts the contents of the block pragmas', () => {
         return postcss([ plugin() ]).process(cssFixture, { to: targetFile })
-
             .then(() => {
                 const main = fs.readFileSync(`${__dirname}/public/main.css`, 'utf8');
                 const external = fs.readFileSync(`${__dirname}/public/external.css`, 'utf8');
@@ -59,5 +88,4 @@ describe('output styles', () => {
                 expect(/^\.child \{/.test(child)).toBe(true);
             });
     });
-
 });
