@@ -59,6 +59,20 @@ describe('output file', () => {
                 });
             });
     });
+
+    it('will write into a nested directory', () => {
+        return postcss([plugin()]).process(cssFixture, { to: path.join(__dirname, 'public/nested/main.css') })
+            .then(() => {
+                const nestedDirExists = fs.existsSync(`${__dirname}/public/nested`);
+                expect(nestedDirExists).toBe(true);
+
+                const filesCreated = fs.readdirSync(`${__dirname}/public/nested`);
+                const expectedFiles = ['main.css', 'external.css', 'parent.css', 'child.css'];
+                expectedFiles.forEach(file => {
+                    expect(filesCreated).toContain(file);
+                });
+            });
+    });
 });
 
 describe('output styles', () => {
