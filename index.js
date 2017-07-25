@@ -1,7 +1,6 @@
 const postcss = require('postcss');
 const fs = require('fs-extra');
 const path = require('path');
-const mkdirp = require('mkdirp');
 
 const DELIMITER = /^!\s?(start|end):([\w_-]+\.css)\s?$/;
 
@@ -50,9 +49,7 @@ module.exports = postcss.plugin('postcss-extract-css-block', function () {
             blocks[context].nodes.push(rule);
         });
 
-        mkdirp(targetDir, (err) => {
-            if (err) console.error(err);
-        });
+        fs.mkdirpSync(targetDir);
 
         Object.keys(blocks).forEach(filename => {
             const css = blocks[filename].toString().trim();
